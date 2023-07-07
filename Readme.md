@@ -28,4 +28,10 @@ export ETH_PRIVATE_KEY=0x12312a122313123123123
 npm run restore <destination_contract_address> <backup_json_filename>
 ```
 
+We expect to have a perfect match between the NFT ids (`object_id` field) in the JSON file and the NFTs in the contract. If there is a mismatch in the expected ID, the script will fail.
+
+It can though detect the progress till ID X and skip the NFTs before X and continue with the rest.
+
+## How to get the private key for the contract admin account
+
 Here's how to [retrive the account's private key in MetaMask](https://support.metamask.io/hc/en-us/articles/360015289632-How-to-export-an-account-s-private-key).
