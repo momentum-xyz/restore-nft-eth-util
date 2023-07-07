@@ -30,26 +30,24 @@ db.connect();
 
 (async () => {
   const { rows } = await db.query(`SELECT * FROM nft ORDER BY object_id ASC`);
-  console.log(`Found ${rows.length} NFTs`);
-  console.log('First NFT', rows[0]);
+  console.log(`Found total ${rows.length} NFTs in DB`);
+  console.log('First NFT', toNFT(rows[0]));
 
-  const nfts = rows
-    .map((nft) => ({
-      ...nft,
-      wallet_id: '0x' + Buffer.from(nft.wallet_id).toString('hex'),
-      contract_id: '0x' + Buffer.from(nft.contract_id).toString('hex'),
-    }))
-    .filter((n) => {
-      // console.log(
-      //   'n.contract_id',
-      //   n.contract_id,
-      //   typeof n.contract_id,
-      //   contractAddress,
-      //   typeof contractAddress,
-      //   n.contract_id === contractAddress
-      // );
-      return n.contract_id === contractAddress;
-    });
+  const nfts = rows.map(toNFT).filter((n) => {
+    // console.log(
+    //   'n.contract_id',
+    //   n.contract_id,
+    //   typeof n.contract_id,
+    //   contractAddress,
+    //   typeof contractAddress,
+    //   n.contract_id === contractAddress
+    // );
+    return n.contract_id === contractAddress;
+  });
+  if (nfts.length === 0) {
+    console.log(`No NFTs found for contract ${contractAddress}`);
+    process.exit(1);
+  }
 
   console.log('NFTS', JSON.stringify(nfts, null, 2));
 
@@ -62,3 +60,13 @@ db.connect();
 
   process.exit(0);
 })();
+
+// Helpers
+
+function toNFT(nft: any) {
+  return {
+    ...nft,
+    wallet_id: '0x' + Buffer.from(nft.wallet_id).toString('hex'),
+    contract_id: '0x' + Buffer.from(nft.contract_id).toString('hex'),
+  };
+}
